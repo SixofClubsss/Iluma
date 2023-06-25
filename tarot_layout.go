@@ -16,8 +16,15 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+var T dreams.DreamsItems
+
 // Layout all objects for Iluma Tarot dApp
-func LayoutAllItems(t *dreams.DreamsItems, d dreams.DreamsObject) fyne.CanvasObject {
+func LayoutAllItems(d dreams.DreamsObject) fyne.CanvasObject {
+	T.LeftLabel = widget.NewLabel("")
+	T.RightLabel = widget.NewLabel("")
+	T.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")
+	T.RightLabel.SetText("dReams Balance: " + rpc.DisplayBalance("dReams") + "      Dero Balance: " + rpc.DisplayBalance("Dero") + "      Height: " + rpc.Wallet.Display.Height)
+
 	search_entry := widget.NewEntry()
 	search_entry.SetPlaceHolder("TXID:")
 	search_button := widget.NewButton("    Search   ", func() {
@@ -46,7 +53,7 @@ func LayoutAllItems(t *dreams.DreamsItems, d dreams.DreamsObject) fyne.CanvasObj
 		}
 	})
 
-	tarot_label := container.NewHBox(t.LeftLabel, layout.NewSpacer(), t.RightLabel)
+	tarot_label := container.NewHBox(T.LeftLabel, layout.NewSpacer(), T.RightLabel)
 
 	//  Clickable Tarot card objects
 	Iluma.Label = widget.NewLabel("")
@@ -129,7 +136,7 @@ func LayoutAllItems(t *dreams.DreamsItems, d dreams.DreamsObject) fyne.CanvasObj
 		nil,
 		pad)
 
-	t.DApp = container.NewBorder(
+	T.DApp = container.NewBorder(
 		dwidget.LabelColor(tarot_label),
 		nil,
 		nil,
@@ -228,7 +235,7 @@ func LayoutAllItems(t *dreams.DreamsItems, d dreams.DreamsObject) fyne.CanvasObj
 
 	tarot_tabs := container.NewAppTabs(
 		container.NewTabItem("Iluma", container.NewMax(alpha120, iluma_cont)),
-		container.NewTabItem("Reading", t.DApp))
+		container.NewTabItem("Reading", T.DApp))
 
 	tarot_tabs.OnSelected = func(ti *container.TabItem) {
 		switch ti.Text {
@@ -243,7 +250,7 @@ func LayoutAllItems(t *dreams.DreamsItems, d dreams.DreamsObject) fyne.CanvasObj
 
 	tarot_tabs.SetTabLocation(container.TabLocationBottom)
 
-	go fetch(t, d)
+	go fetch(d)
 
 	return container.NewMax(tarot_tabs, Iluma.Actions)
 }

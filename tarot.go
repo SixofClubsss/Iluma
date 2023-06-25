@@ -48,26 +48,32 @@ var iluma_intro string
 
 var Iluma tarot
 
-func initValues() {
-	Iluma.Value.Display = true
+func DreamsMenuIntro() (entries map[string][]string) {
+	entries = map[string][]string{
+		"Tarot": {
+			"On chain Tarot readings",
+			"Iluma cards and readings created by Kalina Lux"},
+	}
+
+	return
 }
 
 // Main Tarot process
-func fetch(t *dreams.DreamsItems, d dreams.DreamsObject) {
-	initValues()
+func fetch(d dreams.DreamsObject) {
+	Iluma.Value.Display = true
 	time.Sleep(3 * time.Second)
 	for {
 		select {
 		case <-d.Receive():
 			if !rpc.Wallet.IsConnected() || !rpc.Daemon.IsConnected() {
 				disableActions(true)
-				tarotRefresh(t)
+				tarotRefresh()
 				d.WorkDone()
 				continue
 			}
 
 			FetchTarotSC()
-			tarotRefresh(t)
+			tarotRefresh()
 			if Iluma.Value.Found && !Iluma.Value.Notified {
 				if !d.IsWindows() {
 					Iluma.Value.Notified = d.Notification("dReams - Iluma", "Your Reading has Arrived")
@@ -128,9 +134,9 @@ func disableActions(b bool) {
 }
 
 // Refresh all Tarot objects
-func tarotRefresh(t *dreams.DreamsItems) {
-	t.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")
-	t.RightLabel.SetText("dReams Balance: " + rpc.DisplayBalance("dReams") + "      Dero Balance: " + rpc.DisplayBalance("Dero") + "      Height: " + rpc.Wallet.Display.Height)
+func tarotRefresh() {
+	T.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")
+	T.RightLabel.SetText("dReams Balance: " + rpc.DisplayBalance("dReams") + "      Dero Balance: " + rpc.DisplayBalance("Dero") + "      Height: " + rpc.Wallet.Display.Height)
 
 	if !Iluma.Value.Display {
 		FetchReading(Iluma.Value.Last)
@@ -156,7 +162,7 @@ func tarotRefresh(t *dreams.DreamsItems) {
 		ActionBuffer(false)
 	}
 
-	t.DApp.Refresh()
+	T.DApp.Refresh()
 }
 
 // Display random text when Tarot cards are drawn
