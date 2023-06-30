@@ -50,7 +50,7 @@ var Iluma tarot
 
 func DreamsMenuIntro() (entries map[string][]string) {
 	entries = map[string][]string{
-		"Tarot": {
+		"Iluma": {
 			"On chain Tarot readings",
 			"Iluma cards and readings created by Kalina Lux"},
 	}
