@@ -3,12 +3,13 @@ package tarot
 import (
 	_ "embed"
 	"fmt"
-	"log"
 	"math/rand"
 	"time"
 
+	"github.com/civilware/Gnomon/structures"
 	dreams "github.com/dReam-dApps/dReams"
 	"github.com/dReam-dApps/dReams/rpc"
+	"github.com/sirupsen/logrus"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -47,6 +48,7 @@ type tarot struct {
 var iluma_intro string
 
 var Iluma tarot
+var logger = structures.Logger.WithFields(logrus.Fields{})
 
 func DreamsMenuIntro() (entries map[string][]string) {
 	entries = map[string][]string{
@@ -81,7 +83,7 @@ func fetch(d *dreams.DreamsObject) {
 			}
 			d.WorkDone()
 		case <-d.CloseDapp():
-			log.Println("[Iluma] Done")
+			logger.Println("[Iluma] Done")
 			return
 		}
 	}

@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/dReam-dApps/dReams/rpc"
@@ -25,7 +24,7 @@ func FetchTarotSC() {
 		}
 
 		if err := rpcClientD.CallFor(ctx, &result, "DERO.GetSC", params); err != nil {
-			log.Println("[FetchTarotSC]", err)
+			logger.Println("[FetchTarotSC]", err)
 			return
 		}
 
@@ -51,7 +50,7 @@ func FetchReading(tx string) {
 
 		err := rpcClientD.CallFor(ctx, &result, "DERO.GetSC", params)
 		if err != nil {
-			log.Println("[FetchTarotReading]", err)
+			logger.Println("[FetchTarotReading]", err)
 			return
 		}
 
@@ -123,7 +122,7 @@ func DrawReading(num int) {
 	}
 
 	if err := rpcClientW.CallFor(ctx, &txid, "transfer", params); err != nil {
-		log.Println("[TarotReading]", err)
+		logger.Println("[TarotReading]", err)
 		return
 	}
 
@@ -131,7 +130,7 @@ func DrawReading(num int) {
 	Iluma.Value.Last = txid.TXID
 	Iluma.Value.Notified = false
 
-	log.Println("[TarotReading] Reading TX:", txid)
+	logger.Println("[TarotReading] Reading TX:", txid)
 	rpc.AddLog("Tarot Reading TX: " + txid.TXID)
 
 	Iluma.Value.CHeight = rpc.Wallet.Height

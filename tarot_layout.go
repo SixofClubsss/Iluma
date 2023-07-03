@@ -2,7 +2,6 @@ package tarot
 
 import (
 	"image/color"
-	"log"
 
 	dreams "github.com/dReam-dApps/dReams"
 	"github.com/dReam-dApps/dReams/bundle"
@@ -48,7 +47,7 @@ func LayoutAllItems(d *dreams.DreamsObject) fyne.CanvasObject {
 				}
 				Iluma.Box.Refresh()
 			} else {
-				log.Println("[Iluma] This is not your reading")
+				logger.Println("[Iluma] This is not your reading")
 			}
 		}
 	})
