@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.3.1
-	github.com/civilware/Gnomon v0.0.0-20230703161103-0df35ac89055
-	github.com/dReam-dApps/dReams v0.9.7-0.20230703023132-a03af8d7d74b
+	github.com/civilware/Gnomon v0.0.0-20230703202054-c41eb33ce9c3
+	github.com/dReam-dApps/dReams v0.9.7-0.20230703204357-eeb721c209ac
 	github.com/deroproject/derohe v0.0.0-20230604143809-765b2db1f482
 	github.com/sirupsen/logrus v1.9.3
 )
