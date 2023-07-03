@@ -47,7 +47,7 @@ func LayoutAllItems(d *dreams.DreamsObject) fyne.CanvasObject {
 				}
 				Iluma.Box.Refresh()
 			} else {
-				logger.Println("[Iluma] This is not your reading")
+				logger.Errorln("[Iluma] This is not your reading")
 			}
 		}
 	})

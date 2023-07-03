@@ -24,7 +24,7 @@ func FetchTarotSC() {
 		}
 
 		if err := rpcClientD.CallFor(ctx, &result, "DERO.GetSC", params); err != nil {
-			logger.Println("[FetchTarotSC]", err)
+			logger.Errorln("[FetchTarotSC]", err)
 			return
 		}
 
@@ -50,7 +50,7 @@ func FetchReading(tx string) {
 
 		err := rpcClientD.CallFor(ctx, &result, "DERO.GetSC", params)
 		if err != nil {
-			logger.Println("[FetchTarotReading]", err)
+			logger.Errorln("[FetchTarotReading]", err)
 			return
 		}
 
@@ -122,7 +122,7 @@ func DrawReading(num int) {
 	}
 
 	if err := rpcClientW.CallFor(ctx, &txid, "transfer", params); err != nil {
-		logger.Println("[TarotReading]", err)
+		logger.Errorln("[TarotReading]", err)
 		return
 	}
 
