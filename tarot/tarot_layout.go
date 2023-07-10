@@ -15,10 +15,10 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var T dreams.DreamsItems
+var T dreams.ContainerStack
 
 // Layout all objects for Iluma Tarot dApp
-func LayoutAllItems(d *dreams.DreamsObject) fyne.CanvasObject {
+func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 	T.LeftLabel = widget.NewLabel("")
 	T.RightLabel = widget.NewLabel("")
 	T.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")

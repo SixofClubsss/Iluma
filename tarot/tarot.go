@@ -61,7 +61,7 @@ func DreamsMenuIntro() (entries map[string][]string) {
 }
 
 // Main Tarot process
-func fetch(d *dreams.DreamsObject) {
+func fetch(d *dreams.AppObject) {
 	Iluma.Value.Display = true
 	time.Sleep(3 * time.Second)
 	for {
