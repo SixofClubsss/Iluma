@@ -214,7 +214,7 @@ func drawConfirm(i int, reset fyne.Container, w fyne.Window) *fyne.Container {
 			Iluma.Value.Found = false
 			Iluma.Value.Display = false
 			if tx := DrawReading(3); tx != "" {
-				menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
+				go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
 			}
 			Iluma.Label.SetText(drawText())
 		} else {
@@ -222,7 +222,7 @@ func drawConfirm(i int, reset fyne.Container, w fyne.Window) *fyne.Container {
 			Iluma.Value.Found = false
 			Iluma.Value.Display = false
 			if tx := DrawReading(1); tx != "" {
-				menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
+				go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
 			}
 			Iluma.Label.SetText(drawText())
 		}
