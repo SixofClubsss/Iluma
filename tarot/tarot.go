@@ -8,6 +8,7 @@ import (
 
 	"github.com/civilware/Gnomon/structures"
 	dreams "github.com/dReam-dApps/dReams"
+	"github.com/dReam-dApps/dReams/menu"
 	"github.com/dReam-dApps/dReams/rpc"
 	"github.com/sirupsen/logrus"
 
@@ -193,7 +194,7 @@ func drawText() (text string) {
 
 // Confirm Tarot draw of one or three cards
 //   - i defines 1 or 3 card draw
-func drawConfirm(i int, reset fyne.Container) *fyne.Container {
+func drawConfirm(i int, reset fyne.Container, w fyne.Window) *fyne.Container {
 	label := widget.NewLabel("")
 	if i == 3 {
 		label.SetText(fmt.Sprintf("You are about to draw three cards\n\nReading fee is %.5f Dero\n\nConfirm", float64(rpc.IlumaFee)/100000))
@@ -212,13 +213,17 @@ func drawConfirm(i int, reset fyne.Container) *fyne.Container {
 			ActionBuffer(true)
 			Iluma.Value.Found = false
 			Iluma.Value.Display = false
-			DrawReading(3)
+			if tx := DrawReading(3); tx != "" {
+				menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
+			}
 			Iluma.Label.SetText(drawText())
 		} else {
 			ActionBuffer(true)
 			Iluma.Value.Found = false
 			Iluma.Value.Display = false
-			DrawReading(1)
+			if tx := DrawReading(1); tx != "" {
+				menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
+			}
 			Iluma.Label.SetText(drawText())
 		}
 

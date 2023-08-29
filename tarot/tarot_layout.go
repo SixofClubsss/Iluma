@@ -148,7 +148,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		if !Iluma.Open {
 			Iluma.Draw1.Hide()
 			Iluma.Draw3.Hide()
-			Iluma.Card2 = *drawConfirm(1, reset)
+			Iluma.Card2 = *drawConfirm(1, reset, d.Window)
 		}
 	})
 
@@ -156,7 +156,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		if !Iluma.Open {
 			Iluma.Draw1.Hide()
 			Iluma.Draw3.Hide()
-			Iluma.Card2 = *drawConfirm(3, reset)
+			Iluma.Card2 = *drawConfirm(3, reset, d.Window)
 		}
 	})
 

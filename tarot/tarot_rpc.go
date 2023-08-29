@@ -96,7 +96,7 @@ func findTarotCard(hash interface{}) int {
 
 // Draw Iluma Tarot reading from SC
 //   - num defines one or three card draw
-func DrawReading(num int) {
+func DrawReading(num int) (tx string) {
 	rpcClientW, ctx, cancel := rpc.SetWalletClient(rpc.Wallet.Rpc, rpc.Wallet.UserPass)
 	defer cancel()
 
@@ -134,4 +134,6 @@ func DrawReading(num int) {
 	rpc.AddLog("Tarot Reading TX: " + txid.TXID)
 
 	Iluma.Value.CHeight = rpc.Wallet.Height
+
+	return txid.TXID
 }
