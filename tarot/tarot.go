@@ -250,7 +250,7 @@ func drawConfirm(i int, reset fyne.Container, w fyne.Window) *fyne.Container {
 
 	Iluma.Open = true
 
-	return container.NewMax(cont)
+	return container.NewStack(cont)
 }
 
 // Display Iluma description for Tarot card
@@ -285,7 +285,7 @@ func ilumaDialog(card int, text string, reset fyne.Container) *fyne.Container {
 	})
 	reset_button.Importance = widget.LowImportance
 
-	return container.NewMax(reset_button, scroll)
+	return container.NewStack(reset_button, scroll)
 }
 
 // Switch for Iluma Tarot card image

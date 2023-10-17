@@ -70,7 +70,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 	spacer := canvas.NewRectangle(color.RGBA{0, 0, 0, 0})
 	spacer.SetMinSize(fyne.NewSize(40, 0))
 
-	Iluma.Card1 = *container.NewMax(one, card_back)
+	Iluma.Card1 = *container.NewStack(one, card_back)
 	pad1 := container.NewBorder(nil, nil, spacer, spacer, &Iluma.Card1)
 
 	two := widget.NewButton("", func() {
@@ -88,7 +88,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		}
 	})
 
-	Iluma.Card2 = *container.NewMax(two, card_back)
+	Iluma.Card2 = *container.NewStack(two, card_back)
 	pad2 := container.NewBorder(nil, nil, spacer, spacer, &Iluma.Card2)
 
 	three := widget.NewButton("", func() {
@@ -103,7 +103,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 	two.Importance = widget.LowImportance
 	three.Importance = widget.LowImportance
 
-	Iluma.Card3 = *container.NewMax(three, card_back)
+	Iluma.Card3 = *container.NewStack(three, card_back)
 	pad3 := container.NewBorder(nil, nil, spacer, spacer, &Iluma.Card3)
 
 	actions := container.NewAdaptiveGrid(3,
@@ -140,7 +140,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		nil,
 		nil,
 		nil,
-		container.NewMax(alpha150, card_box))
+		container.NewStack(alpha150, card_box))
 
 	reset := Iluma.Card2
 
@@ -233,7 +233,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 	}
 
 	tarot_tabs := container.NewAppTabs(
-		container.NewTabItem("Iluma", container.NewMax(alpha120, iluma_cont)),
+		container.NewTabItem("Iluma", container.NewStack(alpha120, iluma_cont)),
 		container.NewTabItem("Reading", T.DApp))
 
 	tarot_tabs.OnSelected = func(ti *container.TabItem) {
@@ -251,5 +251,5 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 
 	go fetch(d)
 
-	return container.NewMax(tarot_tabs, Iluma.Actions)
+	return container.NewStack(tarot_tabs, Iluma.Actions)
 }
