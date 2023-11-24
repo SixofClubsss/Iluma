@@ -82,7 +82,6 @@ func StartApp() {
 
 	// Stand alone process
 	go func() {
-		logger.Printf("[%s] %s %s %s", app_tag, rpc.DREAMSv, runtime.GOOS, runtime.GOARCH)
 		time.Sleep(3 * time.Second)
 		ticker := time.NewTicker(3 * time.Second)
 		for {
@@ -122,7 +121,7 @@ func StartApp() {
 	connect_box.Container.Objects[0].(*fyne.Container).Add(menu.StartIndicators())
 
 	max := LayoutAllItems(&d)
-	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog()))
+	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(app_tag)))
 
 	go func() {
 		time.Sleep(450 * time.Millisecond)

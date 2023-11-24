@@ -122,7 +122,7 @@ func DrawReading(num int) (tx string) {
 	}
 
 	if err := rpcClientW.CallFor(ctx, &txid, "transfer", params); err != nil {
-		logger.Errorln("[TarotReading]", err)
+		rpc.PrintError(fmt.Sprintf("[TarotReading] %s", err))
 		return
 	}
 
@@ -130,8 +130,7 @@ func DrawReading(num int) (tx string) {
 	Iluma.Value.Last = txid.TXID
 	Iluma.Value.Notified = false
 
-	logger.Println("[TarotReading] Reading TX:", txid)
-	rpc.AddLog("Tarot Reading TX: " + txid.TXID)
+	rpc.PrintLog(fmt.Sprintf("[TarotReading] Reading TX: %s", txid))
 
 	Iluma.Value.CHeight = rpc.Wallet.Height
 
