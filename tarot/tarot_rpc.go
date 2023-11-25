@@ -112,7 +112,7 @@ func DrawReading(num int) (tx string) {
 	}
 
 	t := []dero.Transfer{t1}
-	fee := rpc.GasEstimate(rpc.TarotSCID, "[TarotReading]", args, t, rpc.LowLimitFee)
+	fee := rpc.GasEstimate(rpc.TarotSCID, "[Iluma]", args, t, rpc.LowLimitFee)
 	params := &dero.Transfer_Params{
 		Transfers: t,
 		SC_ID:     rpc.TarotSCID,
@@ -122,7 +122,7 @@ func DrawReading(num int) (tx string) {
 	}
 
 	if err := rpcClientW.CallFor(ctx, &txid, "transfer", params); err != nil {
-		rpc.PrintError(fmt.Sprintf("[TarotReading] %s", err))
+		rpc.PrintError("[Iluma] Tarot Reading: %s", err)
 		return
 	}
 
@@ -130,7 +130,7 @@ func DrawReading(num int) (tx string) {
 	Iluma.Value.Last = txid.TXID
 	Iluma.Value.Notified = false
 
-	rpc.PrintLog(fmt.Sprintf("[TarotReading] Reading TX: %s", txid))
+	rpc.PrintLog("[Iluma] Tarot Reading TX: %s", txid)
 
 	Iluma.Value.CHeight = rpc.Wallet.Height
 
