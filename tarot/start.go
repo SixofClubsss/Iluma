@@ -13,6 +13,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"github.com/blang/semver/v4"
 	dreams "github.com/dReam-dApps/dReams"
 	"github.com/dReam-dApps/dReams/bundle"
 	"github.com/dReam-dApps/dReams/dwidget"
@@ -22,6 +23,8 @@ import (
 )
 
 const app_tag = "Iluma"
+
+var version = semver.MustParse("0.3.0-dev")
 
 // Run Iluma as a single dApp
 func StartApp() {
@@ -121,7 +124,7 @@ func StartApp() {
 	connect_box.Container.Objects[0].(*fyne.Container).Add(menu.StartIndicators())
 
 	max := LayoutAllItems(&d)
-	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(app_tag)))
+	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(app_tag, version)))
 
 	go func() {
 		time.Sleep(450 * time.Millisecond)
