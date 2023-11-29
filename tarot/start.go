@@ -26,6 +26,11 @@ const app_tag = "Iluma"
 
 var version = semver.MustParse("0.3.0-dev")
 
+// Check tarot package version
+func Version() semver.Version {
+	return version
+}
+
 // Run Iluma as a single dApp
 func StartApp() {
 	n := runtime.NumCPU()
