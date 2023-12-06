@@ -15,7 +15,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -50,11 +50,13 @@ var iluma_intro string
 
 var Iluma tarot
 var logger = structures.Logger.WithFields(logrus.Fields{})
+var defaultCard = canvas.NewImageFromResource(resourceIluma81Png)
 
 func DreamsMenuIntro() (entries map[string][]string) {
 	entries = map[string][]string{
 		"Iluma": {
 			"On chain Tarot readings",
+			"Draw one or three cards",
 			"Iluma cards and readings created by Kalina Lux"},
 	}
 
@@ -93,11 +95,11 @@ func fetch(d *dreams.AppObject) {
 // Tarot object buffer when action triggered
 func ActionBuffer(d bool) {
 	if d {
-		Iluma.Card1.Objects[1] = canvas.NewImageFromResource(resourceIluma81Png)
+		Iluma.Card1.Objects[1] = defaultCard
 		Iluma.Card1.Refresh()
-		Iluma.Card2.Objects[1] = canvas.NewImageFromResource(resourceIluma81Png)
+		Iluma.Card2.Objects[1] = defaultCard
 		Iluma.Card2.Refresh()
-		Iluma.Card3.Objects[1] = canvas.NewImageFromResource(resourceIluma81Png)
+		Iluma.Card3.Objects[1] = defaultCard
 		Iluma.Card3.Refresh()
 		Iluma.Draw1.Hide()
 		Iluma.Draw3.Hide()
@@ -194,63 +196,42 @@ func drawText() (text string) {
 
 // Confirm Tarot draw of one or three cards
 //   - i defines 1 or 3 card draw
-func drawConfirm(i int, reset fyne.Container, w fyne.Window) *fyne.Container {
-	label := widget.NewLabel("")
+func drawConfirm(i int, d *dreams.AppObject) {
+	var text string
 	if i == 3 {
-		label.SetText(fmt.Sprintf("You are about to draw three cards\n\nReading fee is %.5f Dero\n\nConfirm", float64(rpc.IlumaFee)/100000))
+		text = fmt.Sprintf("You are about to draw three cards\n\nToday, a reading is %.5f Dero\n\nConfirm", float64(rpc.IlumaFee)/100000)
 	} else {
-		label.SetText(fmt.Sprintf("You are about to draw one card\n\nReading fee is %.5f Dero\n\nConfirm", float64(rpc.IlumaFee)/100000))
+		text = fmt.Sprintf("You are about to draw one card\n\nToday, a reading is %.5f Dero\n\nConfirm", float64(rpc.IlumaFee)/100000)
 	}
 
-	label.Wrapping = fyne.TextWrapWord
-	label.Alignment = fyne.TextAlignCenter
-
-	confirm := widget.NewButton("Confirm", func() {
-		Iluma.Card2.Objects = reset.Objects
-		Iluma.Card2.Refresh()
-
-		if i == 3 {
+	Iluma.Open = true
+	done := make(chan struct{})
+	confirm := dialog.NewConfirm("Draw", text, func(b bool) {
+		if b {
 			ActionBuffer(true)
 			Iluma.Value.Found = false
 			Iluma.Value.Display = false
-			if tx := DrawReading(3); tx != "" {
-				go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
-			}
 			Iluma.Label.SetText(drawText())
+			if i == 3 {
+				if tx := DrawReading(3); tx != "" {
+					go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, d.Window)
+				}
+			} else {
+				if tx := DrawReading(1); tx != "" {
+					go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, d.Window)
+				}
+			}
 		} else {
-			ActionBuffer(true)
-			Iluma.Value.Found = false
-			Iluma.Value.Display = false
-			if tx := DrawReading(1); tx != "" {
-				go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, w)
-			}
-			Iluma.Label.SetText(drawText())
+			ActionBuffer(false)
 		}
 
 		Iluma.Open = false
-	})
+		done <- struct{}{}
 
-	cancel := widget.NewButton("Cancel", func() {
-		Iluma.Open = false
-		go func() {
-			Iluma.Card2.Objects = reset.Objects
-			Iluma.Card2.Refresh()
-			Iluma.Draw1.Show()
-			Iluma.Draw3.Show()
-		}()
-	})
+	}, d.Window)
 
-	box := container.NewAdaptiveGrid(2, confirm, cancel)
-	cont := container.NewBorder(
-		nil,
-		box,
-		nil,
-		nil,
-		container.NewVBox(layout.NewSpacer(), label, layout.NewSpacer()))
+	go menu.ShowConfirmDialog(done, confirm)
 
-	Iluma.Open = true
-
-	return container.NewStack(cont)
 }
 
 // Display Iluma description for Tarot card

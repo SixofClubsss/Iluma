@@ -29,7 +29,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 	search_button := widget.NewButton("    Search   ", func() {
 		txid := search_entry.Text
 		if len(txid) == 64 {
-			signer := rpc.VerifySigner(search_entry.Text)
+			signer := rpc.VerifySigner(txid)
 			if signer {
 				Iluma.Value.Display = true
 				Iluma.Label.SetText("")
@@ -65,7 +65,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		}
 	})
 
-	card_back := canvas.NewImageFromResource(resourceIluma81Png)
+	card_back := defaultCard
 
 	spacer := canvas.NewRectangle(color.RGBA{0, 0, 0, 0})
 	spacer.SetMinSize(fyne.NewSize(40, 0))
@@ -142,23 +142,23 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		nil,
 		container.NewStack(alpha150, card_box))
 
-	reset := Iluma.Card2
-
 	Iluma.Draw1 = widget.NewButton("Draw One", func() {
 		if !Iluma.Open {
 			Iluma.Draw1.Hide()
 			Iluma.Draw3.Hide()
-			Iluma.Card2 = *drawConfirm(1, reset, d.Window)
+			drawConfirm(1, d)
 		}
 	})
+	Iluma.Draw1.Importance = widget.HighImportance
 
 	Iluma.Draw3 = widget.NewButton("Draw Three", func() {
 		if !Iluma.Open {
 			Iluma.Draw1.Hide()
 			Iluma.Draw3.Hide()
-			Iluma.Card2 = *drawConfirm(3, reset, d.Window)
+			drawConfirm(3, d)
 		}
 	})
+	Iluma.Draw3.Importance = widget.HighImportance
 
 	Iluma.Draw1.Hide()
 	Iluma.Draw3.Hide()
