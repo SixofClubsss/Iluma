@@ -17,6 +17,7 @@ import (
 	dreams "github.com/dReam-dApps/dReams"
 	"github.com/dReam-dApps/dReams/bundle"
 	"github.com/dReam-dApps/dReams/dwidget"
+	"github.com/dReam-dApps/dReams/gnomes"
 	"github.com/dReam-dApps/dReams/menu"
 	"github.com/dReam-dApps/dReams/rpc"
 	"github.com/sirupsen/logrus"
@@ -35,8 +36,9 @@ func Version() semver.Version {
 func StartApp() {
 	n := runtime.NumCPU()
 	runtime.GOMAXPROCS(n)
-	menu.InitLogrusLog(logrus.InfoLevel)
+	gnomes.InitLogrusLog(logrus.InfoLevel)
 	config := menu.ReadDreamsConfig(app_tag)
+	gnomon := gnomes.NewGnomes()
 
 	// Initialize Fyne app and window
 	a := app.NewWithID(fmt.Sprintf("%s Tarot Client", app_tag))
@@ -48,18 +50,18 @@ func StartApp() {
 	done := make(chan struct{})
 
 	// Initialize dReams AppObject and close func
-	dreams.Theme.Img = *canvas.NewImageFromResource(nil)
+	menu.Theme.Img = *canvas.NewImageFromResource(nil)
 	d := dreams.AppObject{
 		App:        a,
 		Window:     w,
-		Background: container.NewStack(&dreams.Theme.Img),
+		Background: container.NewStack(&menu.Theme.Img),
 	}
 	d.SetChannels(1)
 
 	closeFunc := func() {
 		save := dreams.SaveData{
 			Skin:   config.Skin,
-			DBtype: menu.Gnomes.DBType,
+			DBtype: gnomon.DBStorageType(),
 		}
 
 		if rpc.Daemon.Rpc == "" {
@@ -69,7 +71,7 @@ func StartApp() {
 		}
 
 		menu.WriteDreamsConfig(save)
-		menu.Gnomes.Stop(app_tag)
+		gnomon.Stop(app_tag)
 		d.StopProcess()
 		w.Close()
 	}
