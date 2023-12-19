@@ -215,10 +215,14 @@ func drawConfirm(i int, d *dreams.AppObject) {
 			if i == 3 {
 				if tx := DrawReading(3); tx != "" {
 					go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, d.Window)
+				} else {
+					go menu.ShowTxDialog("Iluma Reading", "TX error, check logs", tx, 3*time.Second, d.Window)
 				}
 			} else {
 				if tx := DrawReading(1); tx != "" {
 					go menu.ShowTxDialog("Iluma Reading", fmt.Sprintf("TXID: %s", tx), tx, 3*time.Second, d.Window)
+				} else {
+					go menu.ShowTxDialog("Iluma Reading", "TX error, check logs", tx, 3*time.Second, d.Window)
 				}
 			}
 		} else {
