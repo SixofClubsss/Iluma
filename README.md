@@ -13,7 +13,7 @@ Iluma dApp is available for download from [dReams](https://dreamdapps.io).
 - One or three card readings
 - View past readings
 - Custom Dero inspired Tarot deck
-- Iluma NFT collection
+- [Iluma](https://tarotiluma.com/) NFT collection
 
 ### Build
 Following these build instructions, you can build Iluma as a *individual* dApp.

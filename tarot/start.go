@@ -13,9 +13,11 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"github.com/blang/semver/v4"
 	dreams "github.com/dReam-dApps/dReams"
 	"github.com/dReam-dApps/dReams/bundle"
 	"github.com/dReam-dApps/dReams/dwidget"
+	"github.com/dReam-dApps/dReams/gnomes"
 	"github.com/dReam-dApps/dReams/menu"
 	"github.com/dReam-dApps/dReams/rpc"
 	"github.com/sirupsen/logrus"
@@ -23,12 +25,20 @@ import (
 
 const app_tag = "Iluma"
 
+var version = semver.MustParse("0.3.0")
+
+// Check tarot package version
+func Version() semver.Version {
+	return version
+}
+
 // Run Iluma as a single dApp
 func StartApp() {
 	n := runtime.NumCPU()
 	runtime.GOMAXPROCS(n)
-	menu.InitLogrusLog(logrus.InfoLevel)
+	gnomes.InitLogrusLog(logrus.InfoLevel)
 	config := menu.ReadDreamsConfig(app_tag)
+	gnomon := gnomes.NewGnomes()
 
 	// Initialize Fyne app and window
 	a := app.NewWithID(fmt.Sprintf("%s Tarot Client", app_tag))
@@ -40,18 +50,19 @@ func StartApp() {
 	done := make(chan struct{})
 
 	// Initialize dReams AppObject and close func
-	dreams.Theme.Img = *canvas.NewImageFromResource(nil)
+	menu.Theme.Img = *canvas.NewImageFromResource(menu.DefaultThemeResource())
 	d := dreams.AppObject{
 		App:        a,
 		Window:     w,
-		Background: container.NewMax(&dreams.Theme.Img),
+		Background: container.NewStack(&menu.Theme.Img),
 	}
 	d.SetChannels(1)
 
 	closeFunc := func() {
 		save := dreams.SaveData{
 			Skin:   config.Skin,
-			DBtype: menu.Gnomes.DBType,
+			DBtype: gnomon.DBStorageType(),
+			Theme:  menu.Theme.Name,
 		}
 
 		if rpc.Daemon.Rpc == "" {
@@ -61,7 +72,7 @@ func StartApp() {
 		}
 
 		menu.WriteDreamsConfig(save)
-		menu.Gnomes.Stop(app_tag)
+		gnomon.Stop(app_tag)
 		d.StopProcess()
 		w.Close()
 	}
@@ -77,12 +88,8 @@ func StartApp() {
 		closeFunc()
 	}()
 
-	// Initialize vars
-	rpc.InitBalances()
-
 	// Stand alone process
 	go func() {
-		logger.Printf("[%s] %s %s %s", app_tag, rpc.DREAMSv, runtime.GOOS, runtime.GOARCH)
 		time.Sleep(3 * time.Second)
 		ticker := time.NewTicker(3 * time.Second)
 		for {
@@ -122,11 +129,11 @@ func StartApp() {
 	connect_box.Container.Objects[0].(*fyne.Container).Add(menu.StartIndicators())
 
 	max := LayoutAllItems(&d)
-	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog()))
+	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(app_tag, version)))
 
 	go func() {
 		time.Sleep(450 * time.Millisecond)
-		w.SetContent(container.NewBorder(nil, container.NewVBox(layout.NewSpacer(), connect_box.Container), nil, nil, container.NewMax(d.Background, max)))
+		w.SetContent(container.NewBorder(nil, container.NewVBox(layout.NewSpacer(), connect_box.Container), nil, nil, container.NewStack(d.Background, max)))
 	}()
 
 	w.ShowAndRun()
