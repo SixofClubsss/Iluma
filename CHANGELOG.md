@@ -8,6 +8,7 @@ This file lists the changes to Iluma repo with each version.
 * Go 1.21.5
 * Fyne 2.4.3
 * dReams 0.11.1
+* Clean up RPC client var names 
 
 
 ## 0.3.0 - December 23 2023
