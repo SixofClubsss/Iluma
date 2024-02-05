@@ -97,12 +97,10 @@ func findTarotCard(hash interface{}) int {
 // Draw Iluma Tarot reading from SC
 //   - num defines one or three card draw
 func DrawReading(num int) (tx string) {
-	client, ctx, cancel := rpc.SetWalletClient(rpc.Wallet.Rpc, rpc.Wallet.UserPass)
-	defer cancel()
-
-	arg1 := dero.Argument{Name: "entrypoint", DataType: "S", Value: "Draw"}
-	arg2 := dero.Argument{Name: "num", DataType: "U", Value: num}
-	args := dero.Arguments{arg1, arg2}
+	args := dero.Arguments{
+		dero.Argument{Name: "entrypoint", DataType: "S", Value: "Draw"},
+		dero.Argument{Name: "num", DataType: "U", Value: num},
+	}
 	txid := dero.Transfer_Result{}
 
 	t1 := dero.Transfer{
@@ -121,7 +119,7 @@ func DrawReading(num int) (tx string) {
 		Fees:      fee,
 	}
 
-	if err := client.CallFor(ctx, &txid, "transfer", params); err != nil {
+	if err := rpc.Wallet.CallFor(&txid, "transfer", params); err != nil {
 		rpc.PrintError("[Iluma] Tarot Reading: %s", err)
 		return
 	}
