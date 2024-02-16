@@ -25,7 +25,7 @@ import (
 
 const app_tag = "Iluma"
 
-var version = semver.MustParse("0.3.1")
+var version = semver.MustParse("0.3.1-dev.0")
 
 // Check tarot package version
 func Version() semver.Version {
