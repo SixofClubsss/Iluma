@@ -44,7 +44,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
 	github.com/klauspost/compress v1.15.13 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/klauspost/reedsolomon v1.11.7 // indirect
 	github.com/lesismal/llib v1.1.13 // indirect
 	github.com/lesismal/nbio v1.3.17 // indirect
