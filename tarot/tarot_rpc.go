@@ -99,7 +99,7 @@ func findTarotCard(hash interface{}) int {
 func DrawReading(num int) (tx string) {
 	args := dero.Arguments{
 		dero.Argument{Name: "entrypoint", DataType: "S", Value: "Draw"},
-		dero.Argument{Name: "num", DataType: "U", Value: num},
+		dero.Argument{Name: "num", DataType: "U", Value: uint64(num)},
 	}
 	txid := dero.Transfer_Result{}
 
