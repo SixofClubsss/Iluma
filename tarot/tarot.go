@@ -35,7 +35,7 @@ type tarot struct {
 		Card1    int
 		Card2    int
 		Card3    int
-		CHeight  int
+		CHeight  uint64
 		Num      int
 		Last     string
 		Readings string
@@ -140,8 +140,8 @@ func disableActions(b bool) {
 
 // Refresh all Tarot objects
 func tarotRefresh() {
-	T.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")
-	T.RightLabel.SetText("dReams Balance: " + rpc.DisplayBalance("dReams") + "      Dero Balance: " + rpc.DisplayBalance("Dero") + "      Height: " + rpc.Wallet.Display.Height)
+	T.Left.UpdateText()
+	T.Right.UpdateText()
 
 	if !Iluma.Value.Display {
 		FetchReading(Iluma.Value.Last)
@@ -163,7 +163,7 @@ func tarotRefresh() {
 		}
 	}
 
-	if rpc.Wallet.Height > Iluma.Value.CHeight+3 && !rpc.IsConfirmingTx() {
+	if rpc.Wallet.Height() > Iluma.Value.CHeight+3 && !rpc.IsConfirmingTx() {
 		ActionBuffer(false)
 	}
 

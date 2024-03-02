@@ -5,9 +5,9 @@ go 1.21.5
 require (
 	fyne.io/fyne/v2 v2.4.4-0.20231230213034-537ba82a15dc
 	github.com/blang/semver/v4 v4.0.0
-	github.com/civilware/Gnomon v0.0.0-20240102201536-a5900d5a61da
-	github.com/dReam-dApps/dReams v0.11.2-0.20240205224855-fcdeafa1cb4d
-	github.com/deroproject/derohe v0.0.0-20230604143809-765b2db1f482
+	github.com/civilware/Gnomon v0.0.0-20240215215804-cfa19c264d97
+	github.com/dReam-dApps/dReams v0.11.2-0.20240302064042-a8f586f4c6a6
+	github.com/deroproject/derohe v0.0.0-20240215152352-a5a0e6a68ada
 	github.com/sirupsen/logrus v1.9.3
 )
 
@@ -73,13 +73,13 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/image v0.14.0 // indirect
 	golang.org/x/mobile v0.0.0-20231108233038-35478a0c49da // indirect
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
-	golang.org/x/term v0.13.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

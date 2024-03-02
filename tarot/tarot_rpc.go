@@ -130,7 +130,7 @@ func DrawReading(num int) (tx string) {
 
 	rpc.PrintLog("[Iluma] Tarot Reading TX: %s", txid)
 
-	Iluma.Value.CHeight = rpc.Wallet.Height
+	Iluma.Value.CHeight = rpc.Wallet.Height()
 
 	return txid.TXID
 }
