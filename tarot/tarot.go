@@ -36,6 +36,7 @@ type tarot struct {
 		Card2    int
 		Card3    int
 		CHeight  uint64
+		Height   uint64
 		Num      int
 		Last     string
 		Readings string

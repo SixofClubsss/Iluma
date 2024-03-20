@@ -56,10 +56,11 @@ func StartApp() {
 	d := dreams.NewFyneApp(
 		appID,
 		appName,
+		"Tarot Readings by Iluma",
 		bundle.DeroTheme(config.Skin),
 		resourceIlumaIconJpg,
 		menu.DefaultBackgroundResource(),
-		rpc.NewXSWDApplicationData(appName, "Tarot Readings by Iluma", appID, true))
+		true)
 
 	// Set one channel for tarot routine
 	d.SetChannels(1)

@@ -12,7 +12,7 @@ import (
 
 // Get Tarot SC data
 func FetchTarotSC() {
-	if rpc.Daemon.IsConnected() {
+	if rpc.Daemon.IsConnected() && rpc.Wallet.Height() > Iluma.Value.Height {
 		client, ctx, cancel := rpc.SetDaemonClient(rpc.Daemon.Rpc)
 		defer cancel()
 
@@ -27,6 +27,8 @@ func FetchTarotSC() {
 			logger.Errorln("[FetchTarotSC]", err)
 			return
 		}
+
+		Iluma.Value.Height = rpc.Wallet.Height()
 
 		Reading_jv := result.VariableStringKeys["readings:"]
 		if Reading_jv != nil {
