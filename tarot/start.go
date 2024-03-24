@@ -9,8 +9,6 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"github.com/blang/semver/v4"
@@ -23,9 +21,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const app_tag = "Iluma"
+const (
+	appName = "Iluma"
+	appID   = "dreamdapps.io.tarot"
+)
 
-var version = semver.MustParse("0.3.1-dev.0")
+var version = semver.MustParse("0.3.1-dev.1")
 
 // Check tarot package version
 func Version() semver.Version {
@@ -36,33 +37,42 @@ func Version() semver.Version {
 func StartApp() {
 	n := runtime.NumCPU()
 	runtime.GOMAXPROCS(n)
+
+	// Initialize logrus logger to stdout
 	gnomes.InitLogrusLog(logrus.InfoLevel)
-	config := menu.ReadDreamsConfig(app_tag)
+
+	// Read config.json file
+	config := menu.GetSettings(appName)
+
+	// Initialize gnomes instance for app
 	gnomon := gnomes.NewGnomes()
 
-	// Initialize Fyne app and window
-	a := app.NewWithID(fmt.Sprintf("%s Tarot Client", app_tag))
-	a.Settings().SetTheme(bundle.DeroTheme(config.Skin))
-	w := a.NewWindow(app_tag)
-	w.SetIcon(resourceIlumaIconJpg)
-	w.Resize(fyne.NewSize(1400, 800))
-	w.SetMaster()
-	done := make(chan struct{})
-
-	// Initialize dReams AppObject and close func
-	menu.Theme.Img = *canvas.NewImageFromResource(menu.DefaultThemeResource())
-	d := dreams.AppObject{
-		App:        a,
-		Window:     w,
-		Background: container.NewStack(&menu.Theme.Img),
+	// If no default background is set Iluma will use 'Glass'
+	if config.Theme == "" {
+		dreams.Theme.Name = "Glass"
 	}
+
+	// Initialize Fyne app and window as dreams.AppObject
+	d := dreams.NewFyneApp(
+		appID,
+		appName,
+		"Tarot Readings by Iluma",
+		bundle.DeroTheme(config.Skin),
+		resourceIlumaIconJpg,
+		menu.DefaultBackgroundResource(),
+		true)
+
+	// Set one channel for tarot routine
 	d.SetChannels(1)
+
+	// Initialize close func anc channel
+	done := make(chan struct{})
 
 	closeFunc := func() {
 		save := dreams.SaveData{
 			Skin:   config.Skin,
 			DBtype: gnomon.DBStorageType(),
-			Theme:  menu.Theme.Name,
+			Theme:  dreams.Theme.Name,
 		}
 
 		if rpc.Daemon.Rpc == "" {
@@ -71,13 +81,13 @@ func StartApp() {
 			save.Daemon = []string{rpc.Daemon.Rpc}
 		}
 
-		menu.WriteDreamsConfig(save)
-		gnomon.Stop(app_tag)
+		menu.StoreSettings(save)
+		gnomon.Stop(appName)
 		d.StopProcess()
-		w.Close()
+		d.Window.Close()
 	}
 
-	w.SetCloseIntercept(closeFunc)
+	d.Window.SetCloseIntercept(closeFunc)
 
 	// Handle ctrl-c close
 	c := make(chan os.Signal, 1)
@@ -96,18 +106,12 @@ func StartApp() {
 			select {
 			case <-ticker.C:
 				rpc.Ping()
-				rpc.EchoWallet(app_tag)
-				go rpc.GetDreamsBalances(rpc.SCIDs)
-				rpc.GetWalletHeight(app_tag)
-
-				if rpc.Daemon.IsConnected() {
-					rpc.Startup = false
-				}
+				rpc.Wallet.Sync()
 
 				d.SignalChannel()
 
 			case <-d.Closing():
-				logger.Printf("[%s] Closing...", app_tag)
+				logger.Printf("[%s] Closing...", appName)
 				ticker.Stop()
 				d.CloseAllDapps()
 				time.Sleep(time.Second)
@@ -117,26 +121,26 @@ func StartApp() {
 		}
 	}()
 
-	// Create dwidget connection box with controls
-	connect_box := dwidget.NewHorizontalEntries(app_tag, 1)
-	connect_box.Button.OnTapped = func() {
-		rpc.GetAddress(app_tag)
-		rpc.Ping()
-	}
+	// Create dwidget connection box, using default OnTapped for RPC/XSWD connections
+	connection := dwidget.NewHorizontalEntries(appName, 1, &d)
 
-	connect_box.AddDaemonOptions(config.Daemon)
+	// Set any saved daemon configs
+	connection.AddDaemonOptions(config.Daemon)
 
-	connect_box.Container.Objects[0].(*fyne.Container).Add(menu.StartIndicators())
+	// Adding dReams indicator panel for wallet, daemon and Gnomon
+	connection.AddIndicator(menu.StartIndicators(nil))
 
-	max := LayoutAllItems(&d)
-	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(app_tag, version)))
+	// Layout all items, appending with rpc.SessionLog tab
+	max := LayoutAll(&d)
+	max.(*fyne.Container).Objects[0].(*container.AppTabs).Append(container.NewTabItem("Log", rpc.SessionLog(appName, version)))
 
+	// Start app and set content
 	go func() {
 		time.Sleep(450 * time.Millisecond)
-		w.SetContent(container.NewBorder(nil, container.NewVBox(layout.NewSpacer(), connect_box.Container), nil, nil, container.NewStack(d.Background, max)))
+		d.Window.SetContent(container.NewStack(container.NewStack(d.Background, max), container.NewVBox(layout.NewSpacer(), connection.Container)))
 	}()
 
-	w.ShowAndRun()
+	d.Window.ShowAndRun()
 	<-done
-	logger.Printf("[%s] Closed", app_tag)
+	logger.Printf("[%s] Closed", appName)
 }

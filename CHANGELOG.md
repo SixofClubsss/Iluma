@@ -2,9 +2,27 @@
 
 This file lists the changes to Iluma repo with each version.
 
+## 0.x.x - In progress
+
+### Added
+
+* XSWD and DERO connections and calls
+
+### Changed
+
+* Fyne 2.4.4
+* dReams 0.12.0
+* Update StartApp with upstream functions
+* `dreams` UpdateText and SetUpdate for labels
+
+### Fixed
+
+* Deprecated menu.ReadDreamsConfig
+
 ## 0.3.1 - January 19 2024
 
 ### Changed
+
 * Go 1.21.5
 * Fyne 2.4.3
 * dReams 0.11.1
@@ -27,6 +45,6 @@ This file lists the changes to Iluma repo with each version.
 * implement `menu` DefaultThemeResource, ShowTxDialog and ShowConfirmDialog
 * implement `rpc` PrintError, PrintLog and IsConfirmingTx
 
-###
+### Fixed
 
 * Deprecated container.NewMax

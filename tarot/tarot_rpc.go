@@ -12,7 +12,7 @@ import (
 
 // Get Tarot SC data
 func FetchTarotSC() {
-	if rpc.Daemon.IsConnected() {
+	if rpc.Daemon.IsConnected() && rpc.Wallet.Height() > Iluma.Value.Height {
 		client, ctx, cancel := rpc.SetDaemonClient(rpc.Daemon.Rpc)
 		defer cancel()
 
@@ -27,6 +27,8 @@ func FetchTarotSC() {
 			logger.Errorln("[FetchTarotSC]", err)
 			return
 		}
+
+		Iluma.Value.Height = rpc.Wallet.Height()
 
 		Reading_jv := result.VariableStringKeys["readings:"]
 		if Reading_jv != nil {
@@ -97,12 +99,10 @@ func findTarotCard(hash interface{}) int {
 // Draw Iluma Tarot reading from SC
 //   - num defines one or three card draw
 func DrawReading(num int) (tx string) {
-	client, ctx, cancel := rpc.SetWalletClient(rpc.Wallet.Rpc, rpc.Wallet.UserPass)
-	defer cancel()
-
-	arg1 := dero.Argument{Name: "entrypoint", DataType: "S", Value: "Draw"}
-	arg2 := dero.Argument{Name: "num", DataType: "U", Value: num}
-	args := dero.Arguments{arg1, arg2}
+	args := dero.Arguments{
+		dero.Argument{Name: "entrypoint", DataType: "S", Value: "Draw"},
+		dero.Argument{Name: "num", DataType: "U", Value: uint64(num)},
+	}
 	txid := dero.Transfer_Result{}
 
 	t1 := dero.Transfer{
@@ -121,7 +121,7 @@ func DrawReading(num int) (tx string) {
 		Fees:      fee,
 	}
 
-	if err := client.CallFor(ctx, &txid, "transfer", params); err != nil {
+	if err := rpc.Wallet.CallFor(&txid, "transfer", params); err != nil {
 		rpc.PrintError("[Iluma] Tarot Reading: %s", err)
 		return
 	}
@@ -132,7 +132,7 @@ func DrawReading(num int) (tx string) {
 
 	rpc.PrintLog("[Iluma] Tarot Reading TX: %s", txid)
 
-	Iluma.Value.CHeight = rpc.Wallet.Height
+	Iluma.Value.CHeight = rpc.Wallet.Height()
 
 	return txid.TXID
 }

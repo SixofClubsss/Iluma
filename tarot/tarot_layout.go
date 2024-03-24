@@ -1,6 +1,7 @@
 package tarot
 
 import (
+	"fmt"
 	"image/color"
 
 	dreams "github.com/dReam-dApps/dReams"
@@ -15,14 +16,17 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var T dreams.ContainerStack
+var T dwidget.ContainerStack
 
 // Layout all objects for Iluma Tarot dApp
-func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
-	T.LeftLabel = widget.NewLabel("")
-	T.RightLabel = widget.NewLabel("")
-	T.LeftLabel.SetText("Total Readings: " + Iluma.Value.Readings + "      Click your card for Iluma reading")
-	T.RightLabel.SetText("dReams Balance: " + rpc.DisplayBalance("dReams") + "      Dero Balance: " + rpc.DisplayBalance("Dero") + "      Height: " + rpc.Wallet.Display.Height)
+func LayoutAll(d *dreams.AppObject) fyne.CanvasObject {
+	T.Left.Label = widget.NewLabel("")
+	T.Left.SetUpdate(func() string {
+		return fmt.Sprintf("Total Readings: %s      Click your card for Iluma reading", Iluma.Value.Readings)
+	})
+
+	T.Right.Label = widget.NewLabel("")
+	T.Right.SetUpdate(dreams.SetBalanceLabelText)
 
 	search_entry := widget.NewEntry()
 	search_entry.SetPlaceHolder("TXID:")
@@ -52,7 +56,7 @@ func LayoutAllItems(d *dreams.AppObject) fyne.CanvasObject {
 		}
 	})
 
-	tarot_label := container.NewHBox(T.LeftLabel, layout.NewSpacer(), T.RightLabel)
+	tarot_label := container.NewHBox(T.Left.Label, layout.NewSpacer(), T.Right.Label)
 
 	//  Clickable Tarot card objects
 	Iluma.Label = widget.NewLabel("")
