@@ -26,7 +26,7 @@ const (
 	appID   = "dreamdapps.io.tarot"
 )
 
-var version = semver.MustParse("0.3.1-dev.x")
+var version = semver.MustParse("0.3.1-dev.1")
 
 // Check tarot package version
 func Version() semver.Version {
